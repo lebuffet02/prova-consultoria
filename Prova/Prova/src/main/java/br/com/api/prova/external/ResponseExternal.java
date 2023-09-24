@@ -1,7 +1,7 @@
 package br.com.api.prova.external;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
+import org.springframework.lang.Nullable;
 
 
 public class ResponseExternal<T> {

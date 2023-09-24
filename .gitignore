@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 
 Prova/Prova/.mvn/wrapper/maven-wrapper.properties
+
+.idea/
