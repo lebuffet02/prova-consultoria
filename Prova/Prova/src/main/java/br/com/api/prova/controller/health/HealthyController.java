@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(name = "healthy", produces = {"aplication/json"})
+@RequestMapping(path = "healthy", produces = {"aplication/json"})
 @Tag(name = "Healthy Service", description = "Verificar se o serviço está no ar")
 public class HealthyController {
 

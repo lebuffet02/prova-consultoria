@@ -20,10 +20,14 @@ public class PessoasDTO {
 
     @JsonProperty("id")
     private Long id;
+
     @JsonProperty("nome")
     private String nome;
+
     @JsonProperty("departamento")
     private String departamento;
+
+    @JsonProperty("tarefas")
     private List<TarefasEntity> tarefas = new ArrayList<>();
 
     public PessoasDTO() {}

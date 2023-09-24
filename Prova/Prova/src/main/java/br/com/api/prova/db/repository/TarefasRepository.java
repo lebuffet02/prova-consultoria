@@ -1,6 +1,7 @@
 package br.com.api.prova.db.repository;
 
 import br.com.api.prova.db.entity.TarefasEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
