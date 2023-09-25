@@ -18,9 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 url = "https://github.com/lebuffet02/prova-consultoria"
         ),
         license = @License(
-                name = "Apache 2.0",
-                url = ""
-        )
-)
+                name = "Apache 2.0"))
 )
 public class SwaggerConfig implements WebMvcConfigurer {}

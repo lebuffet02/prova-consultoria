@@ -14,6 +14,8 @@ public interface PessoasInterf {
 
    List<PessoaEntity> getTodasPessoas();
 
+   void alocarPessoa(Long pessoaId, Long tarefaId);
+
    List<Object[]> findAllByPessoasComTotalHorasGastas();
 
    List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome);

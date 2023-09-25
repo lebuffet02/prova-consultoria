@@ -5,9 +5,12 @@ package br.com.api.prova.service.pessoas;
 import br.com.api.prova.DTO.record.Pessoas;
 import br.com.api.prova.db.entity.DepartamentoEntity;
 import br.com.api.prova.db.entity.PessoaEntity;
+import br.com.api.prova.db.entity.TarefaEntity;
 import br.com.api.prova.db.repository.PessoaRepository;
+import br.com.api.prova.db.repository.TarefasRepository;
 import br.com.api.prova.exception.departamentoException.DepartamentoException;
 import br.com.api.prova.exception.pessoasException.EntidadePessoasException;
+import br.com.api.prova.exception.tarefasException.TarefasException;
 import br.com.api.prova.service.departamentos.DepartamentoService;
 import br.com.api.prova.util.MapperUtilsPessoa;
 import jakarta.transaction.Transactional;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class PessoasService implements PessoasInterf {
 
     private final PessoaRepository repository;
+    private final TarefasRepository tarefasRepository;
     private final DepartamentoService service;
 
     @Override
@@ -64,6 +68,21 @@ public class PessoasService implements PessoasInterf {
             return pessoasEntityList;
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public void alocarPessoa(Long pessoaId, Long tarefaId) {
+        PessoaEntity pessoa = repository.findById(pessoaId)
+                .orElseThrow(() -> new EntidadePessoasException("Pessoa não encontrada"));
+
+        TarefaEntity tarefa = tarefasRepository.findById(tarefaId)
+                .orElseThrow(() -> new TarefasException("Tarefa não encontrada"));
+
+        if (!pessoa.getDepartamento().equals(tarefa.getDepartamento())) {
+            throw new IllegalArgumentException("A pessoa e a tarefa não pertencem ao mesmo departamento");
+        }
+        tarefa.setPessoaAlocada(pessoa);
+        tarefasRepository.save(tarefa);
     }
 
     @Override

@@ -56,9 +56,10 @@ public class TarefasService implements TarefasInterf {
 
     @Override
     public void finalizarTarefa(Long id, Tarefas tarefasDTO) {
-        repository.findById(id).orElseThrow(() -> new EntidadePessoasException("Tarefa com id não encontrada"));
-        if (tarefasDTO != null && tarefasDTO.isFinalizado()) {
-            repository.deleteById(id);
+        TarefaEntity tarefa = repository.findById(id).orElseThrow(() -> new EntidadePessoasException("Tarefa com id não encontrada"));
+        if (tarefasDTO != null && !tarefasDTO.isFinalizado()) {
+            tarefa.setFinalizado(true);
+            repository.save(tarefa);
         }
     }
 
