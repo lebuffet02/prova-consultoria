@@ -14,17 +14,18 @@ import java.util.Optional;
 @Transactional
 public interface PessoaRepository extends JpaRepository<PessoaEntity, Long> {
 
-    @Query("SELECT p.nome, p.departamento.titulo, " +
-            "CONCAT(FLOOR(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/3600), 'h ', " +
-            "MOD(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/60, 60)) " +
-            "FROM PessoaEntity p " +
-            "LEFT JOIN TarefaEntity t ON p.id = t.pessoaAlocada.id " +
-            "GROUP BY p.nome, p.departamento.titulo")
-    List<Object[]> findAllByPessoasComTotalHorasGastas();
 
 
-    @Query("SELECT p.nome, " +
-            "AVG(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')) / 3600.0) " +
+//    @Query("SELECT p.nome, p.departamento.titulo, " +
+//            "CONCAT(FLOOR(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/3600), 'h ', " +
+//            "MOD(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/60, 60), 'm') " +
+//            "FROM PessoaEntity p " +
+//            "LEFT JOIN TarefaEntity t ON p.id = t.pessoaAlocada.id " +
+//            "GROUP BY p.nome, p.departamento.titulo")
+//    List<Object[]> findAllByPessoasComTotalHorasGastas();
+
+
+    @Query("SELECT p.nome, AVG(COALESCE(t.tempoDiasDuracao, 0) / 3600.0) " +
             "FROM PessoaEntity p " +
             "LEFT JOIN p.tarefas t " +
             "WHERE p.nome = :nome " +

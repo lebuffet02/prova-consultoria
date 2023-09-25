@@ -2,6 +2,8 @@ package br.com.api.prova.db.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
@@ -24,8 +26,9 @@ public class TarefaEntity {
     @ManyToOne
     @JoinColumn(name = "departamento_id")
     private DepartamentoEntity departamento;
-    private LocalTime duracao;
-    private Boolean finalizado;
+    private boolean isAtrasado;
+    private boolean finalizado;
+    private int tempoDiasDuracao;
 
     @ManyToOne
     @JoinColumn(name = "pessoa_id") // Nome da coluna que faz referência à pessoa alocada

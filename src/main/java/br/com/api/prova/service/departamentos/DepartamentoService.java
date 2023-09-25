@@ -1,6 +1,6 @@
 package br.com.api.prova.service.departamentos;
 
-import br.com.api.prova.DTO.record.Departamento;
+import br.com.api.prova.record.Departamento;
 import br.com.api.prova.db.entity.DepartamentoEntity;
 import br.com.api.prova.db.repository.DepartamentoRepository;
 import br.com.api.prova.exception.departamentoException.DepartamentoException;
@@ -21,7 +21,7 @@ public class DepartamentoService implements DepartamentoInterf {
     public Departamento adicionarDepartamento(Departamento departamentoDTO) {
         Optional<DepartamentoEntity> departamento = repository.findById(departamentoDTO.id());
         if (departamento.isPresent()) {
-            throw new DepartamentoException("Departamento já existe");
+            throw new DepartamentoException("falha-departamento.existente");
         }
         DepartamentoEntity departamentoEntity = MapperUtilsDepartamento.MAPPER.mapToDepartamentoEntity(departamentoDTO);
         DepartamentoEntity salvarDepartamento = repository.save(departamentoEntity);

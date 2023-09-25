@@ -1,6 +1,6 @@
 package br.com.api.prova.controller;
 
-import br.com.api.prova.DTO.record.Tarefas;
+import br.com.api.prova.record.Tarefas;
 import br.com.api.prova.db.entity.TarefaEntity;
 import br.com.api.prova.service.tarefas.TarefasService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,7 +44,7 @@ public class TarefasController {
     public ResponseEntity<Tarefas> alterarTarefa(
             @PathVariable("id") long id,
             @RequestBody Tarefas tarefasDTO) {
-        return new ResponseEntity<>(service.alterarTarefa(id, tarefasDTO), HttpStatus.OK);
+        return new ResponseEntity<>(service.alterarTarefa(id, tarefasDTO), HttpStatus.NO_CONTENT);
     }
 
 
@@ -60,7 +60,7 @@ public class TarefasController {
             @PathVariable("id") long id,
             @RequestBody Tarefas tarefasDTO) {
         service.finalizarTarefa(id, tarefasDTO);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
 
@@ -116,6 +116,6 @@ public class TarefasController {
     @GetMapping("/tarefas/pendentes")
     public ResponseEntity<List<TarefaEntity>> semPessoaAlocada() {
         List<TarefaEntity> semPessoaAlocada = service.getPessoaNaoAlocada();
-        return ResponseEntity.ok(semPessoaAlocada);
+        return new ResponseEntity<>(semPessoaAlocada, HttpStatus.OK);
     }
 }

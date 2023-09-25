@@ -1,6 +1,6 @@
 package br.com.api.prova.controller;
 
-import br.com.api.prova.DTO.record.Pessoas;
+import br.com.api.prova.record.Pessoas;
 import br.com.api.prova.db.entity.PessoaEntity;
 import br.com.api.prova.service.pessoas.PessoasService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +46,7 @@ public class PessoasController {
             @PathVariable("id") long id,
             @RequestBody Pessoas pessoasDTO) {
         service.alterarPessoa(id, pessoasDTO);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(service.alterarPessoa(id, pessoasDTO), HttpStatus.NO_CONTENT);
     }
 
 
@@ -92,19 +92,6 @@ public class PessoasController {
     }
 
 
-    @Operation(summary = "Lista pessoas trazendo nome, departamento, total horas gastas nas tarefas")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
-    })
-    @GetMapping
-    public  ResponseEntity<List<Object[]>> listarPessoas() {
-        return ResponseEntity.ok(service.findAllByPessoasComTotalHorasGastas());
-    }
-
-
     @Operation(summary = "Busca pessoas por nome e período, retorna média de horas gastas por tarefa")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Serviço saudável"),
@@ -114,7 +101,7 @@ public class PessoasController {
     })
     @GetMapping("/pendentes/{nome}")
     public ResponseEntity<List<Object[]>> gastos(@PathVariable("nome") String nome) {
-        return ResponseEntity.ok(service.buscarMediaHorasPorTarefaPorNome(nome));
+        return new ResponseEntity<>(service.buscarMediaHorasPorTarefaPorNome(nome), HttpStatus.OK);
     }
 
 
@@ -133,4 +120,16 @@ public class PessoasController {
         return ResponseEntity.noContent().build();
     }
 
+
+//    @Operation(summary = "Lista pessoas trazendo nome, departamento, total horas gastas nas tarefas")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
+//            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+//            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
+//            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
+//    })
+//    @GetMapping
+//    public  ResponseEntity<List<Object[]>> listarPessoas() {
+//        return ResponseEntity.ok(service.findAllByPessoasComTotalHorasGastas());
+//    }
 }

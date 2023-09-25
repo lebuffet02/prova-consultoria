@@ -1,11 +1,11 @@
 package br.com.api.prova.service.tarefas;
 
-import br.com.api.prova.DTO.record.Tarefas;
+import br.com.api.prova.record.Tarefas;
 import br.com.api.prova.db.entity.DepartamentoEntity;
 import br.com.api.prova.db.entity.TarefaEntity;
 import br.com.api.prova.db.repository.TarefasRepository;
-import br.com.api.prova.exception.pessoasException.EntidadePessoasException;
-import br.com.api.prova.exception.tarefasException.TarefasException;
+import br.com.api.prova.exception.regraNegocioException.RegraNegocioException;
+import br.com.api.prova.exception.tarefasException.EntidadeTarefaException;
 import br.com.api.prova.service.departamentos.DepartamentoService;
 import br.com.api.prova.util.MapperUtilsTarefas;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class TarefasService implements TarefasInterf {
 
+
     @Autowired
     TarefasRepository repository;
     @Autowired
@@ -28,7 +29,7 @@ public class TarefasService implements TarefasInterf {
     public Tarefas adicionarTarefa(Tarefas tarefasDTO) {
         Optional<TarefaEntity> tarefa = repository.findById(tarefasDTO.id());
         if (tarefa.isPresent()) {
-            throw new TarefasException("Tarefa com esse id já existe");
+            throw new EntidadeTarefaException("falha-buscar.tarefa.id.existente");
         }
         TarefaEntity tarefaEntity = MapperUtilsTarefas.MAPPER.mapToTarefasEntity(tarefasDTO);
         TarefaEntity salvarTarefa = repository.save(tarefaEntity);
@@ -38,13 +39,15 @@ public class TarefasService implements TarefasInterf {
     @Override
     public Tarefas alterarTarefa(Long id, Tarefas tarefasDTO) {
         TarefaEntity tarefa = repository.findById(id)
-                .orElseThrow(() -> new EntidadePessoasException("Tarefa não encontrada"));
-
+                .orElseThrow(() -> new EntidadeTarefaException("falha-buscar.tarefa.nao.encontrada"));
         if (tarefasDTO != null) {
             tarefa.setId(tarefasDTO.id());
             tarefa.setTitulo(tarefasDTO.titulo());
             tarefa.setDescricao(tarefasDTO.descricao());
             tarefa.setPrazo(tarefasDTO.prazo());
+            tarefa.setTempoDiasDuracao(tarefasDTO.tempoDiasDuracao());
+            tarefa.setAtrasado(tarefasDTO.isAtrasado());
+            tarefa.setFinalizado(tarefa.isFinalizado());
             if (tarefasDTO.departamento() != null) {
                 DepartamentoEntity departamento = service.findByTitulo(tarefasDTO.departamento().titulo());
                 tarefa.setDepartamento(departamento);
@@ -56,10 +59,13 @@ public class TarefasService implements TarefasInterf {
 
     @Override
     public void finalizarTarefa(Long id, Tarefas tarefasDTO) {
-        TarefaEntity tarefa = repository.findById(id).orElseThrow(() -> new EntidadePessoasException("Tarefa com id não encontrada"));
+        TarefaEntity tarefa = repository.findById(id).orElseThrow(() -> new EntidadeTarefaException("falha-buscar.tarefa.nao.encontrada"));
         if (tarefasDTO != null && !tarefasDTO.isFinalizado()) {
             tarefa.setFinalizado(true);
             repository.save(tarefa);
+        }
+        else {
+            throw new RegraNegocioException("falha-tarefa.erro");
         }
     }
 

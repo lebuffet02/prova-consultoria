@@ -1,7 +1,7 @@
 package br.com.api.prova.service.pessoas;
 
 
-import br.com.api.prova.DTO.record.Pessoas;
+import br.com.api.prova.record.Pessoas;
 import br.com.api.prova.db.entity.PessoaEntity;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface PessoasInterf {
 
    void alocarPessoa(Long pessoaId, Long tarefaId);
 
-   List<Object[]> findAllByPessoasComTotalHorasGastas();
+//   List<Object[]> findAllByPessoasComTotalHorasGastas();
 
    List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome);
 

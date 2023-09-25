@@ -3,6 +3,7 @@ package br.com.api.prova.exception;
 import br.com.api.prova.exception.departamentoException.DepartamentoException;
 import br.com.api.prova.exception.pessoasException.EntidadePessoasException;
 import br.com.api.prova.exception.pessoasException.PessoasException;
+import br.com.api.prova.exception.regraNegocioException.RegraNegocioException;
 import br.com.api.prova.exception.tarefasException.EntidadeTarefaException;
 import br.com.api.prova.exception.tarefasException.TarefasException;
 import org.springframework.http.HttpStatus;
@@ -19,27 +20,32 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(PessoasException.class)
-    public ResponseEntity<Object> pessoasErrorException(PessoasException e) {
+    public ResponseEntity<Object> pessoasException(PessoasException e) {
         return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntidadePessoasException.class)
-    public ResponseEntity<Object> entidadeErrorException(PessoasException e) {
+    public ResponseEntity<Object> entidadePessoasException(EntidadePessoasException e) {
         return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(TarefasException.class)
-    public ResponseEntity<Object> tarefasErrorException(TarefasException e) {
+    public ResponseEntity<Object> tarefasException(TarefasException e) {
         return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntidadeTarefaException.class)
-    public ResponseEntity<Object> entidadeErrorException(EntidadeTarefaException e) {
+    public ResponseEntity<Object> entidadeTarefaException(EntidadeTarefaException e) {
         return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DepartamentoException.class)
     public ResponseEntity<Object> departamentoException(DepartamentoException e) {
+        return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RegraNegocioException.class)
+    public ResponseEntity<Object> negocioException(RegraNegocioException e) {
         return new ResponseEntity<>(getMap(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 

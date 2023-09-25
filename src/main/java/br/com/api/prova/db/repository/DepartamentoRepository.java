@@ -25,5 +25,9 @@ public interface DepartamentoRepository extends JpaRepository<DepartamentoEntity
             "LEFT JOIN TarefaEntity t ON p.departamento = t.departamento " +
             "WHERE p.departamento.id = :departamentoId")
     List<Object[]> listarDepartamentosComQuantidades();
+
 }
+
+
+
 

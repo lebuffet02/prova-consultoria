@@ -1,6 +1,6 @@
 package br.com.api.prova.util;
 
-import br.com.api.prova.DTO.record.Departamento;
+import br.com.api.prova.record.Departamento;
 import br.com.api.prova.db.entity.DepartamentoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

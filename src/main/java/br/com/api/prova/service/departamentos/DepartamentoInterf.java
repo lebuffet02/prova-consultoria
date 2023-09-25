@@ -1,6 +1,6 @@
 package br.com.api.prova.service.departamentos;
 
-import br.com.api.prova.DTO.record.Departamento;
+import br.com.api.prova.record.Departamento;
 
 import java.util.List;
 

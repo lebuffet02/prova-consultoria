@@ -1,6 +1,6 @@
 package br.com.api.prova.controller;
 
-import br.com.api.prova.DTO.record.Departamento;
+import br.com.api.prova.record.Departamento;
 import br.com.api.prova.service.departamentos.DepartamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

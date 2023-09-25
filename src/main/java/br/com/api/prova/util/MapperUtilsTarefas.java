@@ -1,7 +1,6 @@
 package br.com.api.prova.util;
 
-import br.com.api.prova.DTO.record.Tarefas;
-import br.com.api.prova.db.entity.PessoaEntity;
+import br.com.api.prova.record.Tarefas;
 import br.com.api.prova.db.entity.TarefaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -14,7 +13,5 @@ public interface MapperUtilsTarefas {
     Tarefas mapToTarefasDTO(TarefaEntity tarefaEntity);
 
     TarefaEntity mapToTarefasEntity(Tarefas tarefasDTO);
-
-    String mapToPessoaAlocada(PessoaEntity pessoaEntity);
 
 }

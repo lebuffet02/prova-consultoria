@@ -14,8 +14,6 @@ public class HealthyController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Serviço saudável"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
     })
     @GetMapping()

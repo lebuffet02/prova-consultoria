@@ -1,4 +1,4 @@
-package br.com.api.prova.DTO.record;
+package br.com.api.prova.record;
 
 import java.util.List;
 

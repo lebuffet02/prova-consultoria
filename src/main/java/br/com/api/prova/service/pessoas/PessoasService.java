@@ -1,15 +1,14 @@
 package br.com.api.prova.service.pessoas;
 
 
-
-import br.com.api.prova.DTO.record.Pessoas;
+import br.com.api.prova.record.Pessoas;
 import br.com.api.prova.db.entity.DepartamentoEntity;
 import br.com.api.prova.db.entity.PessoaEntity;
 import br.com.api.prova.db.entity.TarefaEntity;
 import br.com.api.prova.db.repository.PessoaRepository;
 import br.com.api.prova.db.repository.TarefasRepository;
-import br.com.api.prova.exception.departamentoException.DepartamentoException;
 import br.com.api.prova.exception.pessoasException.EntidadePessoasException;
+import br.com.api.prova.exception.regraNegocioException.RegraNegocioException;
 import br.com.api.prova.exception.tarefasException.TarefasException;
 import br.com.api.prova.service.departamentos.DepartamentoService;
 import br.com.api.prova.util.MapperUtilsPessoa;
@@ -27,15 +26,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PessoasService implements PessoasInterf {
 
+
     private final PessoaRepository repository;
     private final TarefasRepository tarefasRepository;
-    private final DepartamentoService service;
+    private DepartamentoService service;
+
 
     @Override
     public Pessoas adicionarPessoa(Pessoas pessoasDTO) {
-        Optional<PessoaEntity> departamento = repository.findById(pessoasDTO.id());
-        if (departamento.isPresent()) {
-            throw new DepartamentoException("Departamento já existe");
+        Optional<PessoaEntity> pessoa = repository.findById(pessoasDTO.id());
+        if (pessoa.isPresent()) {
+            throw new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada");
         }
         PessoaEntity pessoaEntity = MapperUtilsPessoa.MAPPER.mapToPessoaEntity(pessoasDTO);
         PessoaEntity salvarPessoa = repository.save(pessoaEntity);
@@ -46,7 +47,8 @@ public class PessoasService implements PessoasInterf {
     @Override
     public Pessoas alterarPessoa(Long id, Pessoas pessoasDTO) {
         PessoaEntity pessoa = repository.findById(id)
-                .orElseThrow(() -> new EntidadePessoasException("Pessoa não encontrada"));
+                .orElseThrow(() -> new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada"));
+
         if(pessoasDTO != null) {
             pessoa.setId(pessoasDTO.id());
             pessoa.setNome(pessoasDTO.nome());
@@ -73,22 +75,18 @@ public class PessoasService implements PessoasInterf {
     @Override
     public void alocarPessoa(Long pessoaId, Long tarefaId) {
         PessoaEntity pessoa = repository.findById(pessoaId)
-                .orElseThrow(() -> new EntidadePessoasException("Pessoa não encontrada"));
+                .orElseThrow(() -> new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada"));
 
         TarefaEntity tarefa = tarefasRepository.findById(tarefaId)
-                .orElseThrow(() -> new TarefasException("Tarefa não encontrada"));
+                .orElseThrow(() -> new TarefasException("falha-buscar.tarefa.nao.encontrada"));
 
         if (!pessoa.getDepartamento().equals(tarefa.getDepartamento())) {
-            throw new IllegalArgumentException("A pessoa e a tarefa não pertencem ao mesmo departamento");
+            throw new RegraNegocioException("falha-regra-negocio.departamento");
         }
         tarefa.setPessoaAlocada(pessoa);
         tarefasRepository.save(tarefa);
     }
 
-    @Override
-    public List<Object[]> findAllByPessoasComTotalHorasGastas() {
-        return repository.findAllByPessoasComTotalHorasGastas();
-    }
 
     @Override
     public List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome) {
@@ -106,4 +104,9 @@ public class PessoasService implements PessoasInterf {
     public void removerTodos() {
         repository.deleteAll();
     }
+
+    //    @Override
+//    public List<Object[]> findAllByPessoasComTotalHorasGastas() {
+//        return repository.findAllByPessoasComTotalHorasGastas();
+//    }
 }

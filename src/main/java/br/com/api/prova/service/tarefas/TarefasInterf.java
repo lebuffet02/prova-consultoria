@@ -1,10 +1,9 @@
 package br.com.api.prova.service.tarefas;
 
-import br.com.api.prova.DTO.record.Tarefas;
+import br.com.api.prova.record.Tarefas;
 import br.com.api.prova.db.entity.TarefaEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TarefasInterf {
 
