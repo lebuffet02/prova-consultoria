@@ -2,6 +2,7 @@
 
 ## Parte 1:
 
+- Para usar o docker, descomente os arquivos: docker-compose-yml e o Dockerfile
 
 ### Subir o Docker-compose:
 
