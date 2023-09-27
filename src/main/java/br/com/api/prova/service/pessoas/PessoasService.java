@@ -1,21 +1,19 @@
 package br.com.api.prova.service.pessoas;
 
 
-import br.com.api.prova.record.Pessoas;
-import br.com.api.prova.db.entity.DepartamentoEntity;
-import br.com.api.prova.db.entity.PessoaEntity;
-import br.com.api.prova.db.entity.TarefaEntity;
-import br.com.api.prova.db.repository.PessoaRepository;
-import br.com.api.prova.db.repository.TarefasRepository;
+import br.com.api.prova.dto.PessoaDTO;
+import br.com.api.prova.entity.PessoaEntity;
+import br.com.api.prova.entity.TarefaEntity;
 import br.com.api.prova.exception.pessoasException.EntidadePessoasException;
-import br.com.api.prova.exception.regraNegocioException.RegraNegocioException;
-import br.com.api.prova.exception.tarefasException.TarefasException;
-import br.com.api.prova.service.departamentos.DepartamentoService;
-import br.com.api.prova.util.MapperUtilsPessoa;
+import br.com.api.prova.exception.pessoasException.PessoasException;
+import br.com.api.prova.repository.PessoaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,86 +25,73 @@ import java.util.stream.Collectors;
 public class PessoasService implements PessoasInterf {
 
 
-    private final PessoaRepository repository;
-    private final TarefasRepository tarefasRepository;
-    private DepartamentoService service;
-
-
-    @Override
-    public Pessoas adicionarPessoa(Pessoas pessoasDTO) {
-        Optional<PessoaEntity> pessoa = repository.findById(pessoasDTO.id());
-        if (pessoa.isPresent()) {
-            throw new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada");
-        }
-        PessoaEntity pessoaEntity = MapperUtilsPessoa.MAPPER.mapToPessoaEntity(pessoasDTO);
-        PessoaEntity salvarPessoa = repository.save(pessoaEntity);
-        return MapperUtilsPessoa.MAPPER.mapToPessoaDTO(salvarPessoa);
-    }
-
-
-    @Override
-    public Pessoas alterarPessoa(Long id, Pessoas pessoasDTO) {
-        PessoaEntity pessoa = repository.findById(id)
-                .orElseThrow(() -> new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada"));
-
-        if(pessoasDTO != null) {
-            pessoa.setId(pessoasDTO.id());
-            pessoa.setNome(pessoasDTO.nome());
-            if (pessoasDTO.departamento() != null) {
-                DepartamentoEntity departamento = service.findByTitulo(pessoasDTO.departamento().titulo());
-                pessoa.setDepartamento(departamento);
-            }
-        }
-        PessoaEntity pessoaUpdate = repository.save(pessoa);
-        return MapperUtilsPessoa.MAPPER.mapToPessoaDTO(pessoaUpdate);
-    }
+    @Autowired
+    PessoaRepository pessoaRepository;
+    @Autowired
+    private ModelMapper mapper;
 
 
     @Override
     public List<PessoaEntity> getTodasPessoas() {
         List<PessoaEntity> pessoasEntityList;
-        if(!CollectionUtils.isEmpty(repository.findAll())) {
-            pessoasEntityList = repository.findAll().stream().collect(Collectors.toList());
+        if(!CollectionUtils.isEmpty(pessoaRepository.findAll())) {
+            pessoasEntityList = pessoaRepository.findAll().stream().collect(Collectors.toList());
             return pessoasEntityList;
         }
         return new ArrayList<>();
     }
 
     @Override
-    public void alocarPessoa(Long pessoaId, Long tarefaId) {
-        PessoaEntity pessoa = repository.findById(pessoaId)
-                .orElseThrow(() -> new EntidadePessoasException("falha-buscar.pessoa.nao.encontrada"));
-
-        TarefaEntity tarefa = tarefasRepository.findById(tarefaId)
-                .orElseThrow(() -> new TarefasException("falha-buscar.tarefa.nao.encontrada"));
-
-        if (!pessoa.getDepartamento().equals(tarefa.getDepartamento())) {
-            throw new RegraNegocioException("falha-regra-negocio.departamento");
+    public Optional<PessoaEntity> adicionarPessoa(PessoaDTO pessoaDTO) {
+        try {
+            Optional<PessoaEntity> pessoaEntity = pessoaRepository.findById(pessoaDTO.getId());
+            if (ObjectUtils.isEmpty(pessoaDTO) || pessoaEntity.isPresent()) {
+                throw new EntidadePessoasException("Não foi possível adicionar a pessoa");
+            }
+            PessoaEntity pessoa = mapper.map(pessoaDTO, PessoaEntity.class);
+            return Optional.of(pessoaRepository.save(pessoa));
+        } catch (PessoasException e) {
+            throw new PessoasException("Não foi possível alterar a pessoa", e);
         }
-        tarefa.setPessoaAlocada(pessoa);
-        tarefasRepository.save(tarefa);
     }
 
-
     @Override
-    public List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome) {
-        return repository.buscarMediaHorasPorTarefaPorNome(nome);
+    public PessoaEntity alterarPessoa(Long id, PessoaEntity pessoa) {
+        try {
+            Optional<PessoaEntity> optionalPessoa = pessoaRepository.findById(id);
+            if (optionalPessoa.isPresent()) {
+                PessoaEntity pessoaEntity = optionalPessoa.get();
+                pessoaEntity.setNome(pessoa.getNome());
+                pessoaEntity.setDepartamento(pessoa.getDepartamento());
+                pessoaEntity.getTarefas().clear();
+                pessoaEntity.setTarefas(pessoa.getTarefas());
+                return pessoaRepository.save(pessoaEntity);
+            }
+            throw new PessoasException("Não foi possível alterar a pessoa");
+        } catch (PessoasException e) {
+            throw new PessoasException("Não foi possível alterar a pessoa", e);
+        }
     }
 
     @Override
     public void removerPessoa(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+        if (pessoaRepository.existsById(id)) {
+            pessoaRepository.deleteById(id);
         }
     }
 
     @Override
     public void removerTodos() {
-        repository.deleteAll();
+        pessoaRepository.deleteAll();
     }
 
-    //    @Override
-//    public List<Object[]> findAllByPessoasComTotalHorasGastas() {
-//        return repository.findAllByPessoasComTotalHorasGastas();
-//    }
+    @Override
+    public List<TarefaEntity> findAllByPessoasComTotalHorasGastas() {
+        return pessoaRepository.findAllByPessoasComTotalHorasGastas();
+    }
+
+    @Override
+    public List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome) {
+        return pessoaRepository.buscarMediaHorasPorTarefaPorNome(nome);
+    }
 }

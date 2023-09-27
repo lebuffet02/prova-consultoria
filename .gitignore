@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+*.postgres-data/base/1/
+postgres-data/base/13394/
+postgres-data/base/13395/
+postgres-data/global/
+postgres-data/base/1/
+postgres-data/

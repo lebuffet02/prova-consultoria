@@ -1,28 +1,27 @@
-package br.com.api.prova.db.repository;
+package br.com.api.prova.repository;
 
-import br.com.api.prova.db.entity.PessoaEntity;
-import br.com.api.prova.db.entity.TarefaEntity;
+import br.com.api.prova.entity.PessoaEntity;
+import br.com.api.prova.entity.TarefaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional
 public interface PessoaRepository extends JpaRepository<PessoaEntity, Long> {
 
 
-
-//    @Query("SELECT p.nome, p.departamento.titulo, " +
-//            "CONCAT(FLOOR(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/3600), 'h ', " +
-//            "MOD(SUM(TIME_TO_SEC(COALESCE(t.duracao, '00:00:00')))/60, 60), 'm') " +
-//            "FROM PessoaEntity p " +
-//            "LEFT JOIN TarefaEntity t ON p.id = t.pessoaAlocada.id " +
-//            "GROUP BY p.nome, p.departamento.titulo")
-//    List<Object[]> findAllByPessoasComTotalHorasGastas();
+    @Query(value = "SELECT p.nome, d.titulo, " +
+            "CONCAT(FLOOR(SUM(IFNULL(TIME_TO_SEC(t.duracao), 0))/3600), 'h ', " +
+            "MOD(SUM(IFNULL(TIME_TO_SEC(t.duracao), 0))/60, 60), 'm') " +
+            "FROM pessoas p " +
+            "LEFT JOIN tarefas t ON p.id = t.id_pessoa_alocada " +
+            "LEFT JOIN departamentos d ON p.id_departamento = d.id " +
+            "GROUP BY p.nome, d.titulo", nativeQuery = true)
+    List<TarefaEntity> findAllByPessoasComTotalHorasGastas();
 
 
     @Query("SELECT p.nome, AVG(COALESCE(t.tempoDiasDuracao, 0) / 3600.0) " +

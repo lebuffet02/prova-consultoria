@@ -1,4 +1,4 @@
-package br.com.api.prova.db.entity;
+package br.com.api.prova.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,8 +10,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@Builder
 public class DepartamentoEntity {
 
     @Id

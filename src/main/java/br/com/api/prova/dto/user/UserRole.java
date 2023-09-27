@@ -1,4 +1,4 @@
-package br.com.api.prova.record.user;
+package br.com.api.prova.dto.user;
 
 public enum UserRole {
     ADMIN("admin"),

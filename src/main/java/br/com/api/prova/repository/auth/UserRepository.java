@@ -1,7 +1,7 @@
-package br.com.api.prova.db.repository.auth;
+package br.com.api.prova.repository.auth;
 
 
-import br.com.api.prova.record.user.User;
+import br.com.api.prova.dto.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 

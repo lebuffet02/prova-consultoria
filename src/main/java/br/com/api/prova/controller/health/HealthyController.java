@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "healthy", produces = {"aplication/json"})
-@Tag(name = "Healthy Service", description = "Verificar se o serviço está no ar")
+@Tag(name = "Healthy Controller", description = "Verificar se o serviço está no ar")
 public class HealthyController {
 
     @ApiResponses(value = {

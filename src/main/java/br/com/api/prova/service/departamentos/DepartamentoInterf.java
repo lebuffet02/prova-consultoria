@@ -1,12 +1,13 @@
 package br.com.api.prova.service.departamentos;
 
-import br.com.api.prova.record.Departamento;
+import br.com.api.prova.dto.DepartamentoDTO;
+import br.com.api.prova.entity.DepartamentoEntity;
 
 import java.util.List;
 
 public interface DepartamentoInterf {
 
-    Departamento adicionarDepartamento(Departamento departamentoDTO);
+    DepartamentoDTO adicionarDepartamento(DepartamentoDTO departamentoDTO);
 
-    List<Object[]> listarDepartamentosComQuantidades();
+    List<DepartamentoEntity> listarDepartamentosComQuantidades(Long departamentoId);
 }

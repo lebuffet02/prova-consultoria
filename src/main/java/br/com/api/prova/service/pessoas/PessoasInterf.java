@@ -1,33 +1,26 @@
 package br.com.api.prova.service.pessoas;
 
 
-import br.com.api.prova.record.Pessoas;
-import br.com.api.prova.db.entity.PessoaEntity;
+import br.com.api.prova.dto.PessoaDTO;
+import br.com.api.prova.entity.PessoaEntity;
+import br.com.api.prova.entity.TarefaEntity;
 import java.util.List;
+import java.util.Optional;
 
 public interface PessoasInterf {
 
-
-   Pessoas adicionarPessoa(Pessoas pessoasDTO);
-
-   Pessoas alterarPessoa(Long id, Pessoas pessoasDTO);
-
    List<PessoaEntity> getTodasPessoas();
 
-   void alocarPessoa(Long pessoaId, Long tarefaId);
+   Optional<PessoaEntity> adicionarPessoa(PessoaDTO pessoaDTO);
 
-//   List<Object[]> findAllByPessoasComTotalHorasGastas();
-
-   List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome);
+   PessoaEntity alterarPessoa(Long id, PessoaEntity pessoa);
 
    void removerPessoa(Long id);
 
    void removerTodos();
 
+   List<TarefaEntity> findAllByPessoasComTotalHorasGastas();
 
-
-
-
-
+  List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome);
 
 }

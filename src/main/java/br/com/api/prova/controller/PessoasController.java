@@ -1,53 +1,28 @@
 package br.com.api.prova.controller;
 
-import br.com.api.prova.record.Pessoas;
-import br.com.api.prova.db.entity.PessoaEntity;
+import br.com.api.prova.entity.PessoaEntity;
+import br.com.api.prova.dto.PessoaDTO;
+import br.com.api.prova.entity.TarefaEntity;
 import br.com.api.prova.service.pessoas.PessoasService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/gerenciamento/pessoas", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Tag(name = "Pessoas Controller")
 public class PessoasController {
 
     @Autowired
     PessoasService service;
-
-
-    @Operation(summary = "Adiciona uma pessoa")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
-    })
-    @PostMapping
-    public ResponseEntity<Pessoas> adicionarPessoa(@RequestBody Pessoas pessoasDTO) {
-        return new ResponseEntity<>(service.adicionarPessoa(pessoasDTO), HttpStatus.CREATED);
-    }
-
-
-    @Operation(summary = "Altera uma pessoa")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<Pessoas> alterarPessoa(
-            @PathVariable("id") long id,
-            @RequestBody Pessoas pessoasDTO) {
-        service.alterarPessoa(id, pessoasDTO);
-        return new ResponseEntity<>(service.alterarPessoa(id, pessoasDTO), HttpStatus.NO_CONTENT);
-    }
 
 
     @Operation(summary = "Retorna a lista de todas as pessoas")
@@ -60,6 +35,33 @@ public class PessoasController {
     @GetMapping("/obter-todos")
     public ResponseEntity<List<PessoaEntity>> obterTodos() {
         return new ResponseEntity<>(service.getTodasPessoas(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Adiciona uma pessoa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
+    })
+    @PostMapping
+    public ResponseEntity<Optional<PessoaEntity>> adicionarPessoa(@RequestBody PessoaDTO pessoaDTO) {
+        return new ResponseEntity<>(service.adicionarPessoa(pessoaDTO), HttpStatus.CREATED);
+    }
+
+
+    @Operation(summary = "Altera uma pessoa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
+    })
+        @PutMapping("/{id}")
+    public ResponseEntity<PessoaEntity> alterarPessoa(
+            @PathVariable("id") long id,
+            @RequestBody PessoaEntity pessoaEntity) {
+        return new ResponseEntity<>(service.alterarPessoa(id, pessoaEntity), HttpStatus.NO_CONTENT);
     }
 
 
@@ -101,35 +103,19 @@ public class PessoasController {
     })
     @GetMapping("/pendentes/{nome}")
     public ResponseEntity<List<Object[]>> gastos(@PathVariable("nome") String nome) {
-        return new ResponseEntity<>(service.buscarMediaHorasPorTarefaPorNome(nome), HttpStatus.OK);
+        return ResponseEntity.ok(service.buscarMediaHorasPorTarefaPorNome(nome));
     }
 
 
-    @Operation(summary = "Aloca uma pessoa na tarefa que tenha o mesmo departamento")
+    @Operation(summary = "Lista pessoas trazendo nome, departamento, total horas gastas nas tarefas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Serviço saudável"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
     })
-    @PutMapping("/alocar/{id}")
-    public ResponseEntity<Pessoas> alocarPessoa(
-            @PathVariable("id") long pessoaId,
-            @RequestParam("tarefaId") long tarefaId) {
-        service.alocarPessoa(pessoaId, tarefaId);
-        return ResponseEntity.noContent().build();
+    @GetMapping
+    public  ResponseEntity<List<TarefaEntity>> listarPessoasComTotalHorasGastas() {
+        return ResponseEntity.ok(service.findAllByPessoasComTotalHorasGastas());
     }
-
-
-//    @Operation(summary = "Lista pessoas trazendo nome, departamento, total horas gastas nas tarefas")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Serviço saudável"),
-//            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-//            @ApiResponse(responseCode = "400", description = "Parametros inválidos - (Bad Request)"),
-//            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ação - (Internal Error)"),
-//    })
-//    @GetMapping
-//    public  ResponseEntity<List<Object[]>> listarPessoas() {
-//        return ResponseEntity.ok(service.findAllByPessoasComTotalHorasGastas());
-//    }
 }

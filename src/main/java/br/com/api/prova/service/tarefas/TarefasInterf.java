@@ -1,17 +1,20 @@
 package br.com.api.prova.service.tarefas;
 
-import br.com.api.prova.record.Tarefas;
-import br.com.api.prova.db.entity.TarefaEntity;
+import br.com.api.prova.dto.TarefaDTO;
+import br.com.api.prova.entity.TarefaEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TarefasInterf {
 
-    Tarefas adicionarTarefa(Tarefas tarefasDTO);
+    Optional<TarefaEntity> adicionarTarefa(TarefaDTO tarefaDTO);
 
-    Tarefas alterarTarefa(Long id, Tarefas tarefasDTO);
+    TarefaEntity alterarTarefa(Long id, TarefaDTO tarefaDTO);
 
-    void finalizarTarefa(Long id, Tarefas tarefasDTO);
+    void alocarPessoa(Long pessoaId, Long tarefaId);
+
+    TarefaEntity finalizarTarefa(Long id, TarefaDTO tarefaDTO);
 
     List<TarefaEntity> getTodasTarefas();
 

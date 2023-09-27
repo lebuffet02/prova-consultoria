@@ -1,10 +1,8 @@
-package br.com.api.prova.db.entity;
+package br.com.api.prova.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 @Entity(name = "TarefaEntity")
@@ -13,24 +11,28 @@ import java.time.OffsetDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class TarefaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String titulo;
+    @Column
     private String descricao;
+    @Column
     private OffsetDateTime prazo;
-
-    @ManyToOne
-    @JoinColumn(name = "departamento_id")
-    private DepartamentoEntity departamento;
-    private boolean isAtrasado;
-    private boolean finalizado;
+    @Column
     private int tempoDiasDuracao;
+    @Column
+    private boolean finalizado;
 
-    @ManyToOne
-    @JoinColumn(name = "pessoa_id") // Nome da coluna que faz referência à pessoa alocada
+    @ManyToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "idDepartamento", referencedColumnName = "id")
+    private DepartamentoEntity departamento;
+
+    @ManyToOne   //cada pessoa pertence a uma lista de tarefas
+    @JoinColumn(name = "idPessoa")
     private PessoaEntity pessoaAlocada;
+
 }

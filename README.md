@@ -55,7 +55,7 @@ Os demais desafios encontram-se presentes dentro do código, mais especificament
 
 
 ### Select Objetivo: 
-- Montar select que retorne nome do departamento, quantidade de tarefas finalizadas e quantidade de tarefas não finalizadas;
+- Montar select que retorne nome do departamento, quantidade de tarefa finalizadas e quantidade de tarefa não finalizadas;
 
 
     @Query("SELECT d.nome AS nome_departamento,\n" +

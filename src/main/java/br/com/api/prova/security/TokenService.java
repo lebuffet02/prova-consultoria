@@ -1,6 +1,6 @@
 package br.com.api.prova.security;
 
-import br.com.api.prova.record.user.User;
+import br.com.api.prova.dto.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
