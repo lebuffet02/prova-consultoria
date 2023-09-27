@@ -12,8 +12,6 @@ import java.util.List;
 @Transactional
 public interface TarefasRepository extends JpaRepository<TarefaEntity, Long> {
 
-    //"Lista 3 tarefas que estejam sem pessoa alocada com os prazos mais antigos"
-
     @Query("SELECT t FROM TarefaEntity t WHERE t.pessoaAlocada is NULL")
     List<TarefaEntity> findFirst3TarefasSemPessoaAlocada();
 }

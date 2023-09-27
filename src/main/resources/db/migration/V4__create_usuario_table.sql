@@ -1,10 +1,9 @@
 -- CREATE TABLE users
 -- (
 --     id  SERIAL PRIMARY KEY,
---     login VARCHAR(255),
---     password VARCHAR(255),
---     role VARCHAR(255)
+--     login TEXT,
+--     password VARCHAR(100) NOT NULL
 -- );
 --
--- INSERT INTO users (login, password, role)
--- VALUES ('lucas', '12345678', 'ADMIN');
+-- INSERT INTO users (login, password)
+-- VALUES ('lucas', '12345678');

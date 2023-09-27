@@ -20,6 +20,19 @@ docker-compose down
 Adicionar um usuário na tabela users para evitar o 403 (Unauthorized) 
 ```
 
+### Desativar o Spring Security:
+```sh
+Para desativar e remover e evitar o 403 (Unauthorized), comente as classes listadas abaixo e as dependencias do spring-security:
+
+User.java
+UserRespository.java
+AuthenticationController.java
+SecurityFilter.java
+TokenService.java
+SecurityConfig.java
+ 
+```
+
 ![login](login.png)
 
 
@@ -54,20 +67,48 @@ http://localhost:8085/v3/api-docs
 Os demais desafios encontram-se presentes dentro do código, mais especificamente no path: **com.example.demo**
 
 
+### Select Objetivo:
+- Lista pessoas trazendo nome, departamento, total horas gastas nas tarefas:
+
+  @Query(value = "SELECT p.nome, d.titulo, " +
+  "CONCAT(FLOOR(SUM(IFNULL(TIME_TO_SEC(t.duracao), 0))/3600), 'h ', " +
+  "MOD(SUM(IFNULL(TIME_TO_SEC(t.duracao), 0))/60, 60), 'm') " +
+  "FROM pessoas p " +
+  "LEFT JOIN tarefas t ON p.id = t.id_pessoa_alocada " +
+  "LEFT JOIN departamentos d ON p.id_departamento = d.id " +
+  "GROUP BY p.nome, d.titulo", nativeQuery = true)
+  List<TarefaEntity> findAllByPessoasComTotalHorasGastas();
+
+
+### Select Objetivo:
+- Busca pessoas por nome e período, retorna média de horas gastas por tarefa:
+
+  @Query("SELECT p.nome, AVG(COALESCE(t.tempoDiasDuracao, 0) / 3600.0) " +
+  "FROM PessoaEntity p " +
+  "LEFT JOIN p.tarefas t " +
+  "WHERE p.nome = :nome " +
+  "GROUP BY p.nome")
+  List<Object[]> buscarMediaHorasPorTarefaPorNome(String nome);
+
+
 ### Select Objetivo: 
-- Montar select que retorne nome do departamento, quantidade de tarefa finalizadas e quantidade de tarefa não finalizadas;
+- Lista 3 tarefas que estejam sem pessoa alocada com os prazos mais antigos:
+
+    @Query("SELECT t FROM TarefaEntity t WHERE t.pessoaAlocada is NULL")
+    List<TarefaEntity> findFirst3TarefasSemPessoaAlocada();
 
 
-    @Query("SELECT d.nome AS nome_departamento,\n" +
-            "COUNT(CASE WHEN t.finalizado = true THEN 1 ELSE NULL END) AS tarefas_finalizadas,\n" +
-            "COUNT(CASE WHEN t.finalizado = false THEN 1 ELSE NULL END) AS tarefas_nao_finalizadas\n" +
-            "FROM\n" +
-            "departamento d\n" +
-            "LEFT JOIN\n" +
-            "TarefaEntity t ON d.id = t.departamento_id\n" +
-            "GROUP BY\n" +
-            "d.nome")
 
+### Select Objetivo:
+- Lista departamento e quantidade de pessoas e tarefas
+
+  @Query(value = "SELECT d.id AS departamento_id, COUNT(t.id) AS quantidade_tarefas " +
+  "FROM pessoas p " +
+  "LEFT JOIN tarefas t ON p.id = t.id_pessoa_alocada " +
+  "LEFT JOIN departamentos d ON p.id_departamento = d.id " +
+  "WHERE d.id = :departamentoId " +
+  "GROUP BY d.id", nativeQuery = true)
+  List<DepartamentoEntity> listarDepartamentosComQuantidades(@Param("departamentoId") Long departamentoId);
 
 
 ### Select Objetivo:
@@ -88,3 +129,14 @@ Os demais desafios encontram-se presentes dentro do código, mais especificament
             "    PessoaEntity p ON p.id = t.pessoaAlocada.id\n" +
             "ORDER BY\n" +
             "    t.prazo DESC\n")
+
+
+## Algumas chamadas dos endpoints:
+### POST api/gerenciamento/pessoas
+![login](addPessoa.png)
+
+### PUT api/gerenciamento/pessoas/{id}
+![login](alterarPessoa.png)
+
+### GET api/gerenciamento/pessoas/obter-todos
+![login](todasPessoas.png)
